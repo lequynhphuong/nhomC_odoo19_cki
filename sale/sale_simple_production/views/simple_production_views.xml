@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Form View -->
+    <record id="view_simple_production_form" model="ir.ui.view">
+        <field name="name">simple.production.form</field>
+        <field name="model">simple.production</field>
+        <field name="arch" type="xml">
+            <form string="Phiếu Sản Xuất">
+                <header>
+                    <button name="action_confirm" string="Xác Nhận" type="object"
+                        class="btn-primary"
+                        invisible="state != 'draft'"/>
+                    <button name="action_done" string="Hoàn Thành" type="object"
+                        class="btn-primary"
+                        invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Hủy" type="object"
+                        invisible="state in ('done', 'cancel')"/>
+                    <button name="action_reset_draft" string="Đặt Lại Nháp" type="object"
+                        invisible="state != 'cancel'"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Thông Tin Chung">
+                            <field name="sale_order_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="date_planned"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sản Phẩm Cần Sản Xuất">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Ghi Chú">
+                            <field name="note" placeholder="Ghi chú nội bộ..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_simple_production_list" model="ir.ui.view">
+        <field name="name">simple.production.list</field>
+        <field name="model">simple.production</field>
+        <field name="arch" type="xml">
+            <list string="Phiếu Sản Xuất" decoration-muted="state == 'cancel'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="partner_id"/>
+                <field name="date_planned"/>
+                <field name="state" widget="badge"
+                    decoration-warning="state == 'draft'"
+                    decoration-info="state == 'confirmed'"
+                    decoration-success="state == 'done'"
+                    decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_simple_production_search" model="ir.ui.view">
+        <field name="name">simple.production.search</field>
+        <field name="model">simple.production</field>
+        <field name="arch" type="xml">
+            <search string="Tìm Phiếu Sản Xuất">
+                <field name="name" string="Mã Phiếu"/>
+                <field name="sale_order_id" string="Đơn Hàng"/>
+                <field name="partner_id" string="Khách Hàng"/>
+                <separator/>
+                <filter name="filter_draft" string="Nháp" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_confirmed" string="Đã Xác Nhận" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="filter_done" string="Hoàn Thành" domain="[('state', '=', 'done')]"/>
+                <filter name="filter_cancel" string="Đã Hủy" domain="[('state', '=', 'cancel')]"/>
+                <group>
+                    <filter name="group_state" string="Trạng Thái" context="{'group_by': 'state'}"/>
+                    <filter name="group_partner" string="Khách Hàng" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_date" string="Ngày Sản Xuất" context="{'group_by': 'date_planned'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_simple_production" model="ir.actions.act_window">
+        <field name="name">Phiếu Sản Xuất</field>
+        <field name="res_model">simple.production</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_simple_production_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo phiếu sản xuất đầu tiên
+            </p>
+            <p>
+                Phiếu sản xuất được tạo từ đơn bán hàng đã xác nhận.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_simple_production"
+        name="Phiếu Sản Xuất"
+        parent="sale.sale_order_menu"
+        action="action_simple_production"
+        sequence="25"
+        groups="sales_team.group_sale_salesman"/>
+
+</odoo>
