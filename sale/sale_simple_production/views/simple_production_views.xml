@@ -90,7 +90,7 @@
                 <filter name="filter_confirmed" string="Đã Xác Nhận" domain="[('state', '=', 'confirmed')]"/>
                 <filter name="filter_done" string="Hoàn Thành" domain="[('state', '=', 'done')]"/>
                 <filter name="filter_cancel" string="Đã Hủy" domain="[('state', '=', 'cancel')]"/>
-                <group expand="0" string="Nhóm Theo">
+                <group>
                     <filter name="group_state" string="Trạng Thái" context="{'group_by': 'state'}"/>
                     <filter name="group_partner" string="Khách Hàng" context="{'group_by': 'partner_id'}"/>
                     <filter name="group_date" string="Ngày Sản Xuất" context="{'group_by': 'date_planned'}"/>
