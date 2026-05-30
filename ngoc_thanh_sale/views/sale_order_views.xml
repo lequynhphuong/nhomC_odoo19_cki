@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_ngoc_thanh" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.ngoc.thanh</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            
+            <xpath expr="//notebook/page[@name='customer_signature']" position="after">
+                <page string="Payment Progress" name="payment_progress">
+                    <group>
+                        <group>
+                            <field name="nt_deposit_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="nt_is_accepted"/>
+                        </group>
+                        <group>
+                            <field name="nt_remaining_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="nt_is_fully_paid"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="sale.menu_sale_invoicing" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>
