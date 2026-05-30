@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_product_template_slab_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.slab.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Cấu Hình Đá" name="slab_config">
+                    <group>
+                        <field name="is_slab_product"/>
+                        <field name="requires_dimension_input"
+                               invisible="not is_slab_product"/>
+                    </group>
+                    <div invisible="not is_slab_product" class="alert alert-info" role="alert">
+                        Sản phẩm đá phải được theo dõi theo <strong>Lô hàng (Lot)</strong>.
+                        SKU được lấy tự động từ <strong>Mã nội bộ (Internal Reference)</strong>
+                        trên tab Thông Tin Chung — không cần nhập thủ công.
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_stock_lot_slab_form_inherit" model="ir.ui.view">
+        <field name="name">stock.lot.slab.form.inherit</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Thông Tin Đá" name="slab_info">
+                        <group>
+                            <group string="Thông Tin Lô">
+                                <field name="supplier_lot_code"
+                                       placeholder="Mã lô của nhà cung cấp..."/>
+                                <field name="origin_country_id"/>
+                            </group>
+                            <group string="Thống Kê">
+                                <field name="total_slab_count" readonly="1"/>
+                                <field name="total_area_m2" readonly="1" digits="[16,4]"/>
+                                <field name="accepted_slab_count" readonly="1"/>
+                                <field name="accepted_area_m2" readonly="1" digits="[16,4]"/>
+                                <field name="quality_status" readonly="1" widget="badge"
+                                    decoration-success="quality_status == 'normal'"
+                                    decoration-warning="quality_status == 'pending'"
+                                    decoration-danger="quality_status == 'defective'"/>
+                            </group>
+                        </group>
+                        <separator string="Danh Sách Tấm Đá"/>
+                        <field name="slab_line_ids">
+                            <list editable="bottom"
+                                  decoration-warning="quality_status == 'pending'"
+                                  decoration-danger="quality_status == 'defective'">
+                                <field name="length_cm" string="Dài (cm)"/>
+                                <field name="width_cm" string="Rộng (cm)"/>
+                                <field name="slab_count" string="Số Tấm"/>
+                                <field name="area_m2" string="Diện Tích (m²)" readonly="1"/>
+                                <field name="quality_status" widget="badge"
+                                    decoration-success="quality_status == 'normal'"
+                                    decoration-warning="quality_status == 'pending'"
+                                    decoration-danger="quality_status == 'defective'"/>
+                                <field name="location_id" string="Vị Trí"/>
+                                <field name="note" string="Ghi Chú"/>
+                            </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
