@@ -3,7 +3,7 @@
     'version': '19.0.1.0.0',
     'category': 'Sales',
     'installable': True,
-    'application': True,  # Thêm đúng dòng này vào nhé
+    'application': True,  
     'depends': ['sale'],
     'author': 'Ngoc Thanh',
     'description': 'Custom Sale Module for Ngoc Thanh',
