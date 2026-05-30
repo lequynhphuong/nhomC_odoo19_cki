@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_supplier_evaluation" model="ir.sequence">
+        <field name="name">Granite Supplier Evaluation</field>
+        <field name="code">granite.supplier.evaluation</field>
+        <field name="prefix">EVAL/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="view_granite_supplier_evaluation_form" model="ir.ui.view">
+        <field name="name">granite.supplier.evaluation.form</field>
+        <field name="model">granite.supplier.evaluation</field>
+        <field name="arch" type="xml">
+            <form string="Supplier Evaluation">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Information">
+                            <field name="partner_id" readonly="1"/>
+                            <field name="purchase_order_id" readonly="1"/>
+                            <field name="stock_picking_id" readonly="1"/>
+                            <field name="evaluation_date"/>
+                        </group>
+                        <group string="Summary Score">
+                            <field name="total_score" widget="float" readonly="1" class="o_field_highlight"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Score Details">
+                            <group>
+                                <group string="Delivery">
+                                    <field name="scheduled_date" readonly="1"/>
+                                    <field name="date_done" readonly="1"/>
+                                    <field name="delivery_delay_days" readonly="1"/>
+                                    <field name="score_delivery" readonly="1"/>
+                                </group>
+                                <group string="Quality and Quantity">
+                                    <field name="score_quality"/>
+                                    <field name="score_quality_float" readonly="1" string="Score"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Competitive Price">
+                                    <field name="po_unit_price" readonly="1"/>
+                                    <field name="avg_price_market" readonly="1"/>
+                                    <field name="price_diff_percent" readonly="1" string="Difference (%)"/>
+                                    <field name="score_price" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Notes">
+                            <field name="note" placeholder="Notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_granite_supplier_evaluation_list" model="ir.ui.view">
+        <field name="name">granite.supplier.evaluation.list</field>
+        <field name="model">granite.supplier.evaluation</field>
+        <field name="arch" type="xml">
+            <list string="Supplier Evaluation"
+                  decoration-danger="total_score &lt; 2.5"
+                  decoration-warning="total_score &gt;= 2.5 and total_score &lt; 3.5"
+                  decoration-success="total_score &gt;= 3.5">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="evaluation_date"/>
+                <field name="purchase_order_id"/>
+                <field name="stock_picking_id"/>
+                <field name="delivery_delay_days" string="Delay (days)"/>
+                <field name="score_delivery" string="Delivery" widget="float" optional="show"/>
+                <field name="score_quality" string="Quality"/>
+                <field name="score_price" string="Price" widget="float" optional="show"/>
+                <field name="total_score" string="Total Score" widget="float"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_granite_supplier_evaluation" model="ir.actions.act_window">
+        <field name="name">Supplier Evaluation</field>
+        <field name="res_model">granite.supplier.evaluation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_granite_evaluation_root" name="Supplier Evaluation" parent="purchase.menu_procurement_management" sequence="99"/>
+    <menuitem id="menu_granite_evaluation_list" name="Evaluation History" parent="menu_granite_evaluation_root" action="action_granite_supplier_evaluation" sequence="1"/>
+</odoo>

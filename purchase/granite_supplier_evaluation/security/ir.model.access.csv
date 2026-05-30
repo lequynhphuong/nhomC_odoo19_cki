@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_granite_eval_user,granite.evaluation.user,model_granite_supplier_evaluation,purchase.group_purchase_user,1,1,1,0
+access_granite_eval_manager,granite.evaluation.manager,model_granite_supplier_evaluation,purchase.group_purchase_manager,1,1,1,1
+access_granite_tag_user,granite.tag.user,model_granite_supplier_tag,purchase.group_purchase_user,1,0,0,0
+access_granite_tag_manager,granite.tag.manager,model_granite_supplier_tag,purchase.group_purchase_manager,1,1,1,1
+access_supplier_evaluation_wizard,supplier.evaluation.wizard,model_supplier_evaluation_wizard,purchase.group_purchase_user,1,1,1,1
