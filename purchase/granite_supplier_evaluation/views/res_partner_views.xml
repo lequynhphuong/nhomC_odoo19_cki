@@ -1,0 +1,63 @@
+<odoo>
+    <record id="view_partner_evaluation_button" model="ir.ui.view">
+        <field name="name">res.partner.evaluation.button</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Smart Button -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="%(granite_supplier_evaluation.action_granite_supplier_evaluation)d"
+                        type="action"
+                        class="oe_stat_button"
+                        icon="fa-star"
+                        invisible="evaluation_count == 0"
+                        context="{'search_default_partner_id': id}">
+                    <div class="o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="avg_score" widget="float" digits="[4,2]"/>
+                            ★
+                        </span>
+                        <span class="o_stat_text">
+                            <field name="evaluation_count"/> Evaluations
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Tab Supplier Evaluation -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Supplier Evaluation" name="supplier_evaluation"
+                      invisible="not is_company and not supplier_rank">
+                    <group>
+                        <group>
+                            <field name="avg_score" string="Average Score"
+                                   widget="float" readonly="1"/>
+                            <field name="evaluation_count" string="Total Evaluations" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="supplier_tag_ids"
+                                   string="Supplier Tags"
+                                   widget="many2many_tags"
+                                   options="{'color_field': 'color'}"/>
+                        </group>
+                    </group>
+                    <field name="evaluation_ids" readonly="1">
+                        <list decoration-danger="total_score &lt; 2.5"
+                              decoration-warning="total_score &gt;= 2.5 and total_score &lt; 3.5"
+                              decoration-success="total_score &gt;= 3.5">
+                            <field name="name" string="Reference"/>
+                            <field name="evaluation_date" string="Date"/>
+                            <field name="purchase_order_id" string="Purchase Order"/>
+                            <field name="score_delivery" string="Delivery"/>
+                            <field name="score_quality" string="Quality"/>
+                            <field name="score_price" string="Price"/>
+                            <field name="total_score" string="Total Score"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

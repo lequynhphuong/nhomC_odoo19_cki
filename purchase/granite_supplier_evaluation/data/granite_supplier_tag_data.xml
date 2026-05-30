@@ -1,0 +1,22 @@
+<odoo noupdate="1">
+    <record id="tag_reliable" model="granite.supplier.tag">
+        <field name="name">Đáng Tin Cậy</field>
+        <field name="color">10</field>
+    </record>
+    <record id="tag_late" model="granite.supplier.tag">
+        <field name="name">Hay Trễ Hàng</field>
+        <field name="color">1</field>
+    </record>
+    <record id="tag_good_price" model="granite.supplier.tag">
+        <field name="name">Giá Tốt</field>
+        <field name="color">4</field>
+    </record>
+    <record id="tag_high_quality" model="granite.supplier.tag">
+        <field name="name">Chất Lượng Cao</field>
+        <field name="color">2</field>
+    </record>
+    <record id="tag_monitor" model="granite.supplier.tag">
+        <field name="name">Cần Theo Dõi</field>
+        <field name="color">3</field>
+    </record>
+</odoo>
