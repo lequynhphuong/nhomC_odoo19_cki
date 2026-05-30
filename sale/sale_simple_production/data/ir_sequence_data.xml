@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="seq_simple_production" model="ir.sequence">
+        <field name="name">Phiếu Sản Xuất</field>
+        <field name="code">simple.production</field>
+        <field name="prefix">PRD/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>
