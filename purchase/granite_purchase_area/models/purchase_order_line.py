@@ -25,9 +25,14 @@ class PurchaseOrderLine(models.Model):
 
     @api.depends("length", "width", "area_m2", "product_qty", "price_unit", "tax_ids")
     def _compute_amount(self):
+        super()._compute_amount()
+
         for line in self:
             company = line.company_id or self.env.company
-            quantity_for_amount = (line.area_m2 or 0.0) * (line.product_qty or 0.0)
+            area_m2 = line.area_m2 or getattr(line, "area", 0.0)
+            quantity_for_amount = (area_m2 or 0.0) * (line.product_qty or 0.0)
+            if quantity_for_amount <= 0:
+                quantity_for_amount = line.product_qty or 0.0
 
             base_line = self.env['account.tax']._prepare_base_line_for_taxes_computation(
                 line,
