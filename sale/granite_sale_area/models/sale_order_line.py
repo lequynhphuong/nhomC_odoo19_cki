@@ -42,30 +42,33 @@ class SaleOrderLine(models.Model):
         super()._compute_amount()
 
         for line in self:
-            if line.area > 0:
-                price = (
-                    line.area
-                    * line.product_uom_qty
-                    * line.price_unit
-                    * (1 - (line.discount or 0.0) / 100.0)
-                )
+            area_m2 = line.area or getattr(line, "area_m2", 0.0)
+            quantity_for_amount = (area_m2 or 0.0) * (line.product_uom_qty or 0.0)
+            if quantity_for_amount <= 0:
+                quantity_for_amount = line.product_uom_qty or 0.0
 
-                taxes = line.tax_ids.compute_all(
-                    price,
-                    line.currency_id,
-                    1.0,
-                    product=line.product_id,
-                    partner=line.order_id.partner_shipping_id,
-                )
+            price = (
+                quantity_for_amount
+                * line.price_unit
+                * (1 - (line.discount or 0.0) / 100.0)
+            )
 
-                line.update({
-                    "price_tax": sum(
-                        tax.get("amount", 0.0)
-                        for tax in taxes.get("taxes", [])
-                    ),
-                    "price_total": taxes["total_included"],
-                    "price_subtotal": taxes["total_excluded"],
-                })
+            taxes = line.tax_ids.compute_all(
+                price,
+                line.currency_id,
+                1.0,
+                product=line.product_id,
+                partner=line.order_id.partner_shipping_id,
+            )
+
+            line.update({
+                "price_tax": sum(
+                    tax.get("amount", 0.0)
+                    for tax in taxes.get("taxes", [])
+                ),
+                "price_total": taxes["total_included"],
+                "price_subtotal": taxes["total_excluded"],
+            })
 
     @api.constrains("length", "width")
     def _check_dimension_values(self):
