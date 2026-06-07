@@ -5,15 +5,8 @@ from odoo.exceptions import ValidationError
 class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
-    length = fields.Float(
-        string="Length",
-        digits=(16, 2),
-    )
-
-    width = fields.Float(
-        string="Width",
-        digits=(16, 2),
-    )
+    length = fields.Float(string="Length", digits=(16, 2))
+    width = fields.Float(string="Width", digits=(16, 2))
 
     area = fields.Float(
         string="Area m²",
@@ -31,6 +24,15 @@ class SaleOrderLine(models.Model):
             else:
                 line.area = 0.0
 
+    def _prepare_base_line_for_taxes_computation(self, **kwargs):
+        self.ensure_one()
+        base_line = super()._prepare_base_line_for_taxes_computation(**kwargs)
+
+        if self.area > 0:
+            base_line["price_unit"] = self.price_unit * self.area
+
+        return base_line
+
     @api.depends(
         "product_uom_qty",
         "discount",
@@ -43,29 +45,22 @@ class SaleOrderLine(models.Model):
 
         for line in self:
             if line.area > 0:
-                price = (
-                    line.area
-                    * line.product_uom_qty
-                    * line.price_unit
-                    * (1 - (line.discount or 0.0) / 100.0)
-                )
+                effective_price_unit = line.price_unit * line.area
 
                 taxes = line.tax_ids.compute_all(
-                    price,
+                    effective_price_unit,
                     line.currency_id,
-                    1.0,
+                    line.product_uom_qty,
                     product=line.product_id,
                     partner=line.order_id.partner_shipping_id,
                 )
 
-                line.update({
-                    "price_tax": sum(
-                        tax.get("amount", 0.0)
-                        for tax in taxes.get("taxes", [])
-                    ),
-                    "price_total": taxes["total_included"],
-                    "price_subtotal": taxes["total_excluded"],
-                })
+                line.price_subtotal = taxes["total_excluded"]
+                line.price_tax = sum(
+                    tax.get("amount", 0.0)
+                    for tax in taxes.get("taxes", [])
+                )
+                line.price_total = taxes["total_included"]
 
     @api.constrains("length", "width")
     def _check_dimension_values(self):
@@ -74,3 +69,23 @@ class SaleOrderLine(models.Model):
                 raise ValidationError("Length cannot be less than 0.")
             if line.width < 0:
                 raise ValidationError("Width cannot be less than 0.")
+
+
+class SaleOrder(models.Model):
+    _inherit = "sale.order"
+
+    @api.depends(
+        "order_line.price_subtotal",
+        "order_line.price_tax",
+        "order_line.price_total",
+    )
+    def _compute_amounts(self):
+        for order in self:
+            lines = order.order_line.filtered(lambda line: not line.display_type)
+
+            amount_untaxed = sum(lines.mapped("price_subtotal"))
+            amount_tax = sum(lines.mapped("price_tax"))
+
+            order.amount_untaxed = amount_untaxed
+            order.amount_tax = amount_tax
+            order.amount_total = amount_untaxed + amount_tax
