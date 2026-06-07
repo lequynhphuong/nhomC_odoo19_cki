@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_granite_scrap_wizard_form" model="ir.ui.view">
+        <field name="name">granite.scrap.wizard.form</field>
+        <field name="model">granite.scrap.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Khai báo xử lý biến cố phế phẩm">
+                <sheet>
+                    <group string="Nguồn gốc Đơn hàng bán">
+                        <field name="sale_order_id"/>
+                        <field name="product_id" domain="[('id', 'in', context.get('allowed_product_ids', []))]"/>
+                    </group>
+                    <group string="Thông tin thợ cắt khai báo (Đơn vị: Tấm)">
+                        <group>
+                            <field name="scrap_type" widget="radio"/>
+                            <field name="scrap_qty_tam"/>
+                        </group>
+                        <group>
+                            <field name="reason" placeholder="Nhập chi tiết lỗi gia công khiến đá bị hư hại..."/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_create_scrap" string="Xác nhận &amp; Báo thợ kho" type="object" class="btn-primary"/>
+                    <button string="Đóng" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

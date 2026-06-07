@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_granite_leftover_stone_form" model="ir.ui.view">
+        <field name="name">granite.leftover.stone.form</field>
+        <field name="model">granite.leftover.stone</field>
+        <field name="arch" type="xml">
+            <form string="Bản ghi đá thừa">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Kích thước thực tế">
+                            <field name="product_id" readonly="1"/>
+                            <field name="length_cm"/>
+                            <field name="width_cm"/>
+                            <field name="area_m2"/>
+                        </group>
+                        <group string="Kho lưu trữ &amp; Trạng thái">
+                            <field name="stone_location_id"/>
+                            <field name="state" widget="radio"/>
+                            <field name="scrap_order_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_granite_leftover_stone_list" model="ir.ui.view">
+        <field name="name">granite.leftover.stone.list</field>
+        <field name="model">granite.leftover.stone</field>
+        <field name="arch" type="xml">
+            <list string="Kho mảnh đá thừa tái sử dụng">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="length_cm"/>
+                <field name="width_cm"/>
+                <field name="area_m2"/>
+                <field name="state" widget="badge" decoration-success="state == 'available'" decoration-warning="state == 'reserved'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_granite_leftover_stone" model="ir.actions.act_window">
+        <field name="name">Kho đá thừa tái sử dụng</field>
+        <field name="res_model">granite.leftover.stone</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_granite_leftover_stone" name="Kho đá thừa" parent="menu_granite_scrap_root" action="action_granite_leftover_stone" sequence="20"/>
+</odoo>

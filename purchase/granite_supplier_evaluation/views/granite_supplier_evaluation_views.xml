@@ -66,6 +66,7 @@
         <field name="model">granite.supplier.evaluation</field>
         <field name="arch" type="xml">
             <list string="Supplier Evaluation"
+                  create="false"
                   decoration-danger="total_score &lt; 2.5"
                   decoration-warning="total_score &gt;= 2.5 and total_score &lt; 3.5"
                   decoration-success="total_score &gt;= 3.5">

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_granite_scrap_order_form" model="ir.ui.view">
+        <field name="name">granite.scrap.order.form</field>
+        <field name="model">granite.scrap.order</field>
+        <field name="arch" type="xml">
+            <form string="Phiếu xử lý phế phẩm">
+                <header>
+                    <button name="action_confirm_scrap" string="Gửi yêu cầu phê duyệt" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_validate_scrap" string="Xác nhận nhập kho phế phẩm (Hủy)" type="object" class="btn-danger" invisible="state != 'waiting'"/>
+                    <button name="action_validate_reusable" string="Xác nhận nhập kho đá thừa (Tái chế)" type="object" class="btn-success" invisible="state != 'waiting'"/>
+                    <button name="action_confirm_transferred" string="Xác nhận đã chuyển vật lý" type="object" class="btn-info" invisible="state != 'ready'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,waiting,ready,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <span class="o_form_label">Phiếu xử lý phế phẩm</span>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="THÔNG TIN NGUỒN GỐC">
+                            <field name="sale_order_id" readonly="state != 'draft'"/>
+                            <field name="product_id" readonly="state != 'draft'"/>
+                            <field name="scrap_type" readonly="state != 'draft'"/>
+                            <field name="scrap_qty_tam" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="THÔNG TIN XỬ LÝ KHO">
+                            <field name="warehouse_user_id"/>
+                            <field name="scrap_date"/>
+                            <field name="leftover_id" invisible="not leftover_id"/>
+                        </group>
+                    </group>
+                    <group string="THẨM ĐỊNH PHÂN XƯỞNG &amp; TÁI CHẾ">
+                        <group>
+                            <field name="reason" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="KÍCH THƯỚC MẢNH ĐÁ GIỮ LẠI (THỢ KHO ĐIỀN)">
+                            <field name="is_reusable" widget="boolean_toggle" readonly="state == 'done'"/>
+                            <field name="length_cm" readonly="state == 'done'"/>
+                            <field name="width_cm" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_granite_scrap_order_list" model="ir.ui.view">
+        <field name="name">granite.scrap.order.list</field>
+        <field name="model">granite.scrap.order</field>
+        <field name="arch" type="xml">
+            <list string="Danh sách phiếu xử lý phế phẩm"
+                  decoration-muted="state == 'draft'"
+                  decoration-warning="state == 'waiting'"
+                  decoration-info="state == 'ready'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="product_id"/>
+                <field name="scrap_type"/>
+                <field name="scrap_qty_tam"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_granite_scrap_order" model="ir.actions.act_window">
+        <field name="name">Xử lý phế phẩm</field>
+        <field name="res_model">granite.scrap.order</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_granite_scrap_root" name="Xử lý phế phẩm" parent="stock.menu_stock_root" sequence="50"/>
+    <menuitem id="menu_granite_scrap_order" name="Phiếu phế phẩm" parent="menu_granite_scrap_root" action="action_granite_scrap_order" sequence="10"/>
+</odoo>
